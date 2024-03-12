@@ -212,7 +212,8 @@ impl IpcReaderAsync {
                     &fetched_metadata
                 };
 
-                let schema = prepare_schema((&metadata.schema).into(), options.row_index.as_ref());
+                let schema =
+                    prepare_schema(metadata.schema.as_ref().into(), options.row_index.as_ref());
 
                 // TODO: According to
                 // https://github.com/pola-rs/polars/pull/14984#discussion_r1521226321

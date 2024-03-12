@@ -1,6 +1,5 @@
 use std::fmt::{Debug, Formatter};
 
-use arrow::datatypes::ArrowSchemaRef;
 use indexmap::map::MutableKeys;
 use indexmap::IndexMap;
 #[cfg(feature = "serde-lazy")]
@@ -454,20 +453,9 @@ impl From<&ArrowSchema> for Schema {
         Self::from_iter(value.fields.iter())
     }
 }
+
 impl From<ArrowSchema> for Schema {
     fn from(value: ArrowSchema) -> Self {
         Self::from(&value)
-    }
-}
-
-impl From<ArrowSchemaRef> for Schema {
-    fn from(value: ArrowSchemaRef) -> Self {
-        Self::from(value.as_ref())
-    }
-}
-
-impl From<&ArrowSchemaRef> for Schema {
-    fn from(value: &ArrowSchemaRef) -> Self {
-        Self::from(value.as_ref())
     }
 }

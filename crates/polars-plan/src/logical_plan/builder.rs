@@ -173,7 +173,7 @@ impl LogicalPlanBuilder {
                     let num_rows = reader.num_rows().await?;
                     let metadata = reader.get_metadata().await?.clone();
 
-                    let schema = prepare_schema((&reader_schema).into(), row_index.as_ref());
+                    let schema = prepare_schema(reader_schema.as_ref().into(), row_index.as_ref());
                     PolarsResult::Ok((schema, reader_schema, Some(num_rows), Some(metadata)))
                 })?
             }
@@ -181,7 +181,7 @@ impl LogicalPlanBuilder {
             let file = polars_utils::open_file(path)?;
             let mut reader = ParquetReader::new(file);
             let reader_schema = reader.schema()?;
-            let schema = prepare_schema((&reader_schema).into(), row_index.as_ref());
+            let schema = prepare_schema(reader_schema.as_ref().into(), row_index.as_ref());
             (
                 schema,
                 reader_schema,
