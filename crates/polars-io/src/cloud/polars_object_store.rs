@@ -2,6 +2,7 @@ use std::ops::Range;
 use std::sync::Arc;
 
 use bytes::Bytes;
+use futures::stream::BoxStream;
 use object_store::path::Path;
 use object_store::{ObjectMeta, ObjectStore};
 use polars_error::{to_compute_err, PolarsResult};
@@ -29,6 +30,22 @@ impl PolarsObjectStore {
                 .bytes()
                 .await
                 .map_err(to_compute_err)
+        })
+        .await
+    }
+
+    pub async fn get_stream(&self, path: &Path) -> PolarsResult<BoxStream<'_, PolarsResult<Bytes>>> {
+        // FIXME: Semaphore should be released after the stream is closed and not before.
+        with_concurrency_budget(1, || async {
+            use futures::stream::StreamExt;
+
+            Ok(self.0
+                .get(path)
+                .await
+                .map_err(to_compute_err)?
+                .into_stream()
+                .map(|item| item.map_err(to_compute_err))
+                .boxed())
         })
         .await
     }
