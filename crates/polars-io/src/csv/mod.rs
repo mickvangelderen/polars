@@ -71,3 +71,8 @@ use crate::mmap::MmapBytesReader;
 use crate::predicates::PhysicalIoExpr;
 use crate::utils::{get_reader_bytes, resolve_homedir};
 use crate::{RowIndex, SerReader, SerWriter};
+
+#[cfg(feature = "cloud")]
+mod csv_reader_async;
+#[cfg(feature = "cloud")]
+pub use csv_reader_async::*;
